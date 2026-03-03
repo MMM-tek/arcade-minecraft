@@ -69,6 +69,7 @@ browserEvents.onMouseMove(function (x, y) {
 })
 function addCrafts () {
     miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks"), 0)
+    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Stick"), 0)
 }
 function Give (Image2: Image) {
     if (!(Image2 == sprites.castle.tilePath2)) {
