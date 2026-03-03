@@ -6,7 +6,7 @@ function Place () {
     if (0 < Slots[Slot]) {
         Slots[Slot] = Slots[Slot] - 1
     }
-    if (Block == assets.tile`transparency16`) {
+    if (Block == assets.tile`Wood`) {
         tiles.setTileAt(Select.tilemapLocation(), Block)
         tiles.setWallAt(Select.tilemapLocation(), false)
     } else {
@@ -71,10 +71,10 @@ function addCrafts () {
     miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks"), 0)
 }
 function Give (Image2: Image) {
-    if (!(Image2 == assets.tile`transparency16`)) {
+    if (!(Image2 == sprites.castle.tilePath2)) {
         Slots[Blocks.indexOf(Image2)] = Slots[Slot] + 1
     } else {
-        Slots[Blocks.indexOf(assets.tile`transparency16`)] = Slots[Slot] + 1
+        Slots[Blocks.indexOf(sprites.castle.tilePath5)] = Slots[Slot] + 1
     }
     tiles.setTileAt(Select.tilemapLocation(), assets.tile`transparency16`)
     tiles.setWallAt(Select.tilemapLocation(), false)
@@ -101,7 +101,7 @@ Steve = platformer.create(assets.image`steve_left1`, SpriteKind.Player)
 Select = sprites.create(assets.image`cursor_6`, SpriteKind.Mouse)
 scene.cameraFollowSprite(Steve)
 tiles.setCurrentTilemap(tilemap`nivel1`)
-tiles.placeOnTile(Steve, tiles.getTileLocation(5, 14))
+tiles.placeOnTile(Steve, tiles.getTileLocation(5, 13))
 scene.setBackgroundColor(9)
 let Title_Game = sprites.create(assets.image`MINECRAFT`, SpriteKind.Title)
 Title_Game.setFlag(SpriteFlag.RelativeToCamera, true)
@@ -110,7 +110,7 @@ let Mode = 1
 platformer.moveSprite(Steve, true)
 platformer.setGravity(500, platformer.Direction.Down)
 Slots = [1, 0, 0]
-Blocks = [assets.tile`transparency16`, assets.tile`transparency16`, assets.tile`transparency16`]
+Blocks = [sprites.castle.tilePath5, assets.tile`Wood`, assets.tile`Stone`]
 Slot = 0
 let textSprite = textsprite.create("")
 Block = assets.tile`transparency16`
@@ -130,14 +130,14 @@ forever(function () {
     textSprite.setText("x" + convertToText(Slots[Slot]))
 })
 forever(function () {
-    for (let valor of tiles.getTilesByType(assets.tile`transparency16`)) {
+    for (let valor of tiles.getTilesByType(sprites.castle.tilePath5)) {
         if (tiles.tileAtLocationEquals(valor.getNeighboringLocation(CollisionDirection.Top), assets.tile`transparency16`)) {
-            tiles.setTileAt(valor, assets.tile`transparency16`)
+            tiles.setTileAt(valor, sprites.castle.tilePath2)
         }
     }
-    for (let valor2 of tiles.getTilesByType(assets.tile`transparency16`)) {
-        if (tiles.tileAtLocationEquals(valor2.getNeighboringLocation(CollisionDirection.Top), assets.tile`transparency16`) || tiles.tileAtLocationEquals(valor2.getNeighboringLocation(CollisionDirection.Top), assets.tile`transparency16`)) {
-            tiles.setTileAt(valor2, assets.tile`transparency16`)
+    for (let valor2 of tiles.getTilesByType(sprites.castle.tilePath2)) {
+        if (tiles.tileAtLocationEquals(valor2.getNeighboringLocation(CollisionDirection.Top), sprites.castle.tilePath5) || tiles.tileAtLocationEquals(valor2.getNeighboringLocation(CollisionDirection.Top), sprites.castle.tilePath2)) {
+            tiles.setTileAt(valor2, sprites.castle.tilePath5)
         }
     }
 })
