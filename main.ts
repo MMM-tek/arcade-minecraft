@@ -2,6 +2,23 @@ namespace SpriteKind {
     export const Title = SpriteKind.create()
     export const Mouse = SpriteKind.create()
 }
+function minerals () {
+    for (let valor of tiles.getTilesByType(assets.tile`dark_rock`)) {
+        if (Math.percentChance(8)) {
+            tiles.setTileAt(valor, assets.tile`miMosaico0`)
+        }
+    }
+    for (let valor of tiles.getTilesByType(assets.tile`dark_rock`)) {
+        if (Math.percentChance(7)) {
+            tiles.setTileAt(valor, assets.tile`miMosaico2`)
+        }
+    }
+    for (let valor of tiles.getTilesByType(assets.tile`dark_rock`)) {
+        if (Math.percentChance(4)) {
+            tiles.setTileAt(valor, assets.tile`diamond`)
+        }
+    }
+}
 function Place () {
     if (1 <= Slots[Slot]) {
         Slots[Slot] = Slots[Slot] - 1
@@ -12,6 +29,18 @@ function Place () {
             tiles.setTileAt(Select.tilemapLocation(), Block)
             tiles.setWallAt(Select.tilemapLocation(), true)
         }
+    }
+}
+function craft (crft: string) {
+    if (crft == "Planks") {
+        craft2 = assets.tile`Wood`
+        out = assets.tile`Planks`
+        craftn = 1
+        outn = 4
+    }
+    if (0 < Slots[Blocks.indexOf(craft2)]) {
+        Slots[Blocks.indexOf(craft2)] = Slots[Blocks.indexOf(craft2)] - craftn
+        Slots[Blocks.indexOf(out)] = Slots[Blocks.indexOf(out)] + outn
     }
 }
 browserEvents.MouseLeft.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
@@ -50,8 +79,10 @@ browserEvents.R.onEvent(browserEvents.KeyEvent.Pressed, function () {
     myMenu.setFlag(SpriteFlag.RelativeToCamera, true)
     miniMenu.setDimensions(myMenu, 160, 120)
     myMenu.setPosition(80, 60)
-    pauseUntil(() => controller.A.isPressed())
-    miniMenu.close(myMenu)
+    miniMenu.onButtonPressed(myMenu, miniMenu.Button.A, function (selection, selectedIndex) {
+        craft(selection)
+        miniMenu.close(myMenu)
+    })
 })
 platformer.onRuleBecomesTrue(platformer.rule(platformer.PlatformerSpriteState.FacingLeft), platformer.EventHandlerCondition.BecomesTrue, function (sprite) {
     Steve.setImage(assets.image`steve_left2`)
@@ -69,7 +100,6 @@ browserEvents.onMouseMove(function (x, y) {
 })
 function addCrafts () {
     miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks"), 0)
-    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Stick"), 0)
 }
 function Give (Image2: Image) {
     if (!(Image2 == sprites.castle.tilePath2)) {
@@ -92,6 +122,10 @@ let worldY = 0
 let worldX = 0
 let myMenu: Sprite = null
 let myImage: Image = null
+let outn = 0
+let craftn = 0
+let out: Image = null
+let craft2: Image = null
 let Block: Image = null
 let Slot = 0
 let Blocks: Image[] = []
@@ -101,7 +135,7 @@ let Steve: Sprite = null
 Steve = platformer.create(assets.image`steve_left1`, SpriteKind.Player)
 Select = sprites.create(assets.image`cursor_6`, SpriteKind.Mouse)
 scene.cameraFollowSprite(Steve)
-tiles.setCurrentTilemap(tilemap`nivel1`)
+tiles.setCurrentTilemap(tilemap`World`)
 tiles.placeOnTile(Steve, tiles.getTileLocation(5, 13))
 scene.setBackgroundColor(9)
 let Title_Game = sprites.create(assets.image`MINECRAFT`, SpriteKind.Title)
@@ -114,13 +148,25 @@ Slots = [
 0,
 0,
 0,
+0,
+0,
+0,
+0,
+0,
+0,
 0
 ]
 Blocks = [
 sprites.castle.tilePath5,
 assets.tile`Wood`,
 assets.tile`Stone`,
-assets.tile`miMosaico`
+assets.tile`miMosaico`,
+assets.tile`dark_rock`,
+assets.tile`diamond`,
+assets.tile`miMosaico0`,
+assets.tile`miMosaico2`,
+assets.tile`miMosaico1`,
+assets.tile`Planks`
 ]
 Slot = 0
 let textSprite = textsprite.create("")
@@ -128,12 +174,7 @@ Block = assets.tile`transparency16`
 textSprite.setPosition(120, 10)
 textSprite.setFlag(SpriteFlag.RelativeToCamera, true)
 Debugger.setHitboxes(false)
-forever(function () {
-    if (0 <= Slots[Slot]) {
-        Block = Blocks[Slot]
-    }
-    info.setScore(Slot)
-})
+minerals()
 forever(function () {
     textSprite.setIcon(Block)
     textSprite.setText("x" + convertToText(Slots[Slot]))
@@ -149,4 +190,10 @@ forever(function () {
             tiles.setTileAt(valor2, sprites.castle.tilePath5)
         }
     }
+})
+forever(function () {
+    if (0 <= Slots[Slot]) {
+        Block = Blocks[Slot]
+    }
+    info.setScore(Slot)
 })
