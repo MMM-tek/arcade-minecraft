@@ -1,5 +1,6 @@
 {
     "name": "Arcade Minecraft",
+    "version": "0.1.0",
     "description": "",
     "dependencies": {
         "device": "*",
