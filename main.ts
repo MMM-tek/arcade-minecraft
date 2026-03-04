@@ -8,14 +8,14 @@ function minerals () {
             tiles.setTileAt(valor, assets.tile`miMosaico0`)
         }
     }
-    for (let valor of tiles.getTilesByType(assets.tile`dark_rock`)) {
+    for (let valor2 of tiles.getTilesByType(assets.tile`dark_rock`)) {
         if (Math.percentChance(7)) {
-            tiles.setTileAt(valor, assets.tile`miMosaico2`)
+            tiles.setTileAt(valor2, assets.tile`miMosaico2`)
         }
     }
-    for (let valor of tiles.getTilesByType(assets.tile`dark_rock`)) {
+    for (let valor3 of tiles.getTilesByType(assets.tile`dark_rock`)) {
         if (Math.percentChance(4)) {
-            tiles.setTileAt(valor, assets.tile`diamond`)
+            tiles.setTileAt(valor3, assets.tile`diamond`)
         }
     }
 }
@@ -105,7 +105,7 @@ function Give (Image2: Image) {
     if (!(Image2 == sprites.castle.tilePath2)) {
         Slots[Blocks.indexOf(Image2)] = Slots[Slot] + 1
     } else {
-        Slots[Blocks.indexOf(sprites.castle.tilePath5)] = Slots[Slot] + 1
+        Slots[Blocks.indexOf(0)] = Slots[Slot] + 1
     }
     tiles.setTileAt(Select.tilemapLocation(), assets.tile`transparency16`)
     tiles.setWallAt(Select.tilemapLocation(), false)
@@ -180,14 +180,14 @@ forever(function () {
     textSprite.setText("x" + convertToText(Slots[Slot]))
 })
 forever(function () {
-    for (let valor of tiles.getTilesByType(sprites.castle.tilePath5)) {
-        if (tiles.tileAtLocationEquals(valor.getNeighboringLocation(CollisionDirection.Top), assets.tile`transparency16`)) {
-            tiles.setTileAt(valor, sprites.castle.tilePath2)
+    for (let valor4 of tiles.getTilesByType(sprites.castle.tilePath5)) {
+        if (tiles.tileAtLocationEquals(valor4.getNeighboringLocation(CollisionDirection.Top), assets.tile`transparency16`)) {
+            tiles.setTileAt(valor4, sprites.castle.tilePath2)
         }
     }
-    for (let valor2 of tiles.getTilesByType(sprites.castle.tilePath2)) {
-        if (tiles.tileAtLocationEquals(valor2.getNeighboringLocation(CollisionDirection.Top), sprites.castle.tilePath5) || tiles.tileAtLocationEquals(valor2.getNeighboringLocation(CollisionDirection.Top), sprites.castle.tilePath2)) {
-            tiles.setTileAt(valor2, sprites.castle.tilePath5)
+    for (let valor22 of tiles.getTilesByType(sprites.castle.tilePath2)) {
+        if (tiles.tileAtLocationEquals(valor22.getNeighboringLocation(CollisionDirection.Top), sprites.castle.tilePath5) || tiles.tileAtLocationEquals(valor22.getNeighboringLocation(CollisionDirection.Top), sprites.castle.tilePath2)) {
+            tiles.setTileAt(valor22, sprites.castle.tilePath5)
         }
     }
 })
