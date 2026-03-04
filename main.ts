@@ -3,15 +3,15 @@ namespace SpriteKind {
     export const Mouse = SpriteKind.create()
 }
 function Place () {
-    if (0 < Slots[Slot]) {
+    if (1 <= Slots[Slot]) {
         Slots[Slot] = Slots[Slot] - 1
-    }
-    if (Block == assets.tile`Wood`) {
-        tiles.setTileAt(Select.tilemapLocation(), Block)
-        tiles.setWallAt(Select.tilemapLocation(), false)
-    } else {
-        tiles.setTileAt(Select.tilemapLocation(), Block)
-        tiles.setWallAt(Select.tilemapLocation(), true)
+        if (Block == assets.tile`Wood`) {
+            tiles.setTileAt(Select.tilemapLocation(), Block)
+            tiles.setWallAt(Select.tilemapLocation(), false)
+        } else {
+            tiles.setTileAt(Select.tilemapLocation(), Block)
+            tiles.setWallAt(Select.tilemapLocation(), true)
+        }
     }
 }
 browserEvents.MouseLeft.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
@@ -119,10 +119,8 @@ textSprite.setPosition(120, 10)
 textSprite.setFlag(SpriteFlag.RelativeToCamera, true)
 Debugger.setHitboxes(false)
 forever(function () {
-    if (0 < Slots[Slot]) {
+    if (0 <= Slots[Slot]) {
         Block = Blocks[Slot]
-    } else {
-        Block = assets.tile`transparency16`
     }
     info.setScore(Slot)
 })
