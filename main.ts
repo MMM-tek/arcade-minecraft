@@ -110,8 +110,18 @@ Title_Game.setPosition(52, 10)
 let Mode = 1
 platformer.moveSprite(Steve, true)
 platformer.setGravity(500, platformer.Direction.Down)
-Slots = [1, 0, 0]
-Blocks = [sprites.castle.tilePath5, assets.tile`Wood`, assets.tile`Stone`]
+Slots = [
+0,
+0,
+0,
+0
+]
+Blocks = [
+sprites.castle.tilePath5,
+assets.tile`Wood`,
+assets.tile`Stone`,
+assets.tile`miMosaico`
+]
 Slot = 0
 let textSprite = textsprite.create("")
 Block = assets.tile`transparency16`
