@@ -40,7 +40,7 @@ function craft (crft: string) {
     }
     for (let valor of craft2) {
         if (!(0 < Slots[Blocks.indexOf(valor)])) {
-            Notification.notify("You don't have enought materials.")
+            game.splash("You don't have enought materials.")
             return
         }
     }
