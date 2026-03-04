@@ -33,15 +33,23 @@ function Place () {
 }
 function craft (crft: string) {
     if (crft == "Planks") {
-        craft2 = assets.tile`Wood`
+        craft2 = [assets.tile`Wood`]
         out = assets.tile`Planks`
-        craftn = 1
+        craftn = [1]
         outn = 4
     }
-    if (0 < Slots[Blocks.indexOf(craft2)]) {
-        Slots[Blocks.indexOf(craft2)] = Slots[Blocks.indexOf(craft2)] - craftn
-        Slots[Blocks.indexOf(out)] = Slots[Blocks.indexOf(out)] + outn
+    for (let valor of craft2) {
+        if (!(0 < Slots[Blocks.indexOf(valor)])) {
+            Notification.notify("You don't have enought materials.")
+            return
+        }
     }
+    for (let valor of craft2) {
+        if (0 < Slots[Blocks.indexOf(valor)]) {
+            Slots[Blocks.indexOf(valor)] = Slots[Blocks.indexOf(valor)] - craftn[Blocks.indexOf(valor)]
+        }
+    }
+    Slots[Blocks.indexOf(out)] = Slots[Blocks.indexOf(out)] + outn
 }
 browserEvents.MouseLeft.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
     if (!(tiles.tileAtLocationEquals(Select.tilemapLocation(), assets.tile`transparency16`))) {
@@ -99,13 +107,13 @@ browserEvents.onMouseMove(function (x, y) {
     tiles.placeOnTile(Select, tiles.getTileLocation(col, fila))
 })
 function addCrafts () {
-    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks"), 0)
+    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks", assets.tile`Planks`), 0)
 }
 function Give (Image2: Image) {
     if (!(Image2 == sprites.castle.tilePath2)) {
         Slots[Blocks.indexOf(Image2)] = Slots[Slot] + 1
     } else {
-        Slots[Blocks.indexOf(0)] = Slots[Slot] + 1
+        Slots[Blocks.indexOf(sprites.castle.tilePath5)] = Slots[Slot] + 1
     }
     tiles.setTileAt(Select.tilemapLocation(), assets.tile`transparency16`)
     tiles.setWallAt(Select.tilemapLocation(), false)
@@ -123,9 +131,9 @@ let worldX = 0
 let myMenu: Sprite = null
 let myImage: Image = null
 let outn = 0
-let craftn = 0
+let craftn: number[] = []
 let out: Image = null
-let craft2: Image = null
+let craft2: Image[] = []
 let Block: Image = null
 let Slot = 0
 let Blocks: Image[] = []
