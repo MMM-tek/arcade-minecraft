@@ -58,6 +58,12 @@
         "tilemapTile": true,
         "displayName": "Planks"
     },
+    "tile16": {
+        "data": "hwQQABAAAAAREREREREREZGZmZmZmZlpkZmZmZmZmWmRmZmZmZmZaZGZmZmZmZlpkZmZmZmZmWmRmZmZmZmZaZGZmZmZmZlpkZmZmZmZmWmRmZmZmZmZaZGZmZmZmZlpkZmZmZmZmWmRmZmZmZmZaZGZmZmZmZlpkZmZmZmZmWlhZmZmZmZmZg==",
+        "mimeType": "image/x-mkcd-f4",
+        "tilemapTile": true,
+        "displayName": "miMosaico9"
+    },
     "nivel1": {
         "id": "nivel1",
         "mimeType": "application/mkcd-tilemap",
@@ -70,8 +76,7 @@
             "sprites.castle.tilePath5",
             "myTiles.tile3",
             "myTiles.tile4",
-            "myTiles.tile7",
-            "myTiles.tile8"
+            "myTiles.tile7"
         ],
         "displayName": "World"
     },

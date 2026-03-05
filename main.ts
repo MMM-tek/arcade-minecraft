@@ -1,6 +1,7 @@
 namespace SpriteKind {
     export const Title = SpriteKind.create()
     export const Mouse = SpriteKind.create()
+    export const Tutorial = SpriteKind.create()
 }
 function minerals () {
     for (let valor of tiles.getTilesByType(assets.tile`dark_rock`)) {
@@ -50,10 +51,14 @@ function craft (crft: string) {
         out = assets.tile`Planks`
         craftn = [1]
         outn = 4
+    } else if (crft == "Diamond Block") {
+        craft2 = [assets.tile`diamond`]
+        out = assets.tile`miMosaico9`
+        craftn = [9]
+        outn = 1
     }
     for (let valor4 of craft2) {
         if (!(0 < Slots[Blocks.indexOf(valor4)])) {
-            game.splash("You don't have enought materials.")
             return
         }
     }
@@ -121,6 +126,7 @@ browserEvents.onMouseMove(function (x, y) {
 })
 function addCrafts () {
     miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks", assets.tile`Planks`), 0)
+    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond Block", assets.tile`miMosaico9`), 0)
 }
 function Give (Image2: Image) {
     if (Image2 == sprites.castle.tilePath2) {
@@ -154,11 +160,46 @@ let Slots: number[] = []
 let Mode = 0
 let Select: Sprite = null
 let Steve: Sprite = null
+let mySprite = sprites.create(img`
+    ................................................................................................
+    ....ff.fff.ff.f.fff.fff.fff.f...fff.............................................................
+    ....f..f.f.f.ff..f..f.f.f.f.f...f...............................................................
+    ....f..f.f.f..f..f..ff..f.f.f...fff.............................................................
+    ....f..f.f.f..f..f..f.f.f.f.f.....f.............................................................
+    ....ff.fff.f..f..f..f.f.fff.fff.fff.............................................................
+    ................................................................................................
+    ................................................................................................
+    ................................................................................................
+    ................................................................................................
+    .....f..ff................fff...................................fff.............................
+    ....f.f.f.f...............f.f...................................f...............................
+    ....fff.f.f...............ff....................................f.f.............................
+    ....f.f.ff................f.f...................................fff.............................
+    ................................................................................................
+    ....ff.ff.fff.f.f.ff......ff.fff.fff.fff.fff....................fff.fff.ff.ff.ff................
+    ....f.f.f.f.f.f.f.f.......f..f.f.f.f.f....f.....................f...f.f.f.f.f.f.................
+    ....f...f.f.f.f.f.ff......f..ff..fff.ff...f.....................f...fff.f...f.ff................
+    ....f...f.f.f.f.f.f.......f..f.f.f.f.f....f.....................f.f.f.f.f...f.f.................
+    ....f...f.fff..f..ff......ff.f.f.f.f.f....f.....................fff.f.f.f...f.ff................
+    ................................................................................................
+    ................................................................................................
+    ................................................................ff.ff.fff.ff..ff................
+    ....fff.fff.fff.ff.ff....fff.f.f.ff.ff.fff......................f.f.f.f.f.f.f.f.................
+    ....f...f.f.f.f.f..f.......f.f.f.f.f.f.f.f......................f...f.f.f.f.f.ff................
+    ....fff.fff.fff.f..ff......f.f.f.f...f.fff......................f...f.f.f.f.f.f.................
+    ......f.f...f.f.f..f.....f.f.f.f.f...f.f........................f...f.fff.ff..ff................
+    ....fff.f...f.f.ff.ff....fff.fff.f...f.f........................................................
+    ................................................................................................
+    ................................................................................................
+    ................................................................................................
+    ................................................................................................
+    `, SpriteKind.Tutorial)
 Steve = platformer.create(assets.image`steve_left1`, SpriteKind.Player)
 Select = sprites.create(assets.image`cursor_6`, SpriteKind.Mouse)
 scene.cameraFollowSprite(Steve)
 tiles.setCurrentTilemap(tilemap`World`)
 tiles.placeOnTile(Steve, tiles.getTileLocation(5, 13))
+tiles.placeOnTile(mySprite, tiles.getTileLocation(5, 12))
 scene.setBackgroundColor(9)
 let Title_Game = sprites.create(assets.image`MINECRAFT`, SpriteKind.Title)
 Title_Game.setFlag(SpriteFlag.RelativeToCamera, true)
@@ -188,7 +229,8 @@ assets.tile`diamond`,
 assets.tile`miMosaico0`,
 assets.tile`miMosaico2`,
 assets.tile`miMosaico1`,
-assets.tile`Planks`
+assets.tile`Planks`,
+assets.tile`miMosaico9`
 ]
 Slot = 0
 let textSprite = textsprite.create("")
@@ -197,10 +239,6 @@ textSprite.setPosition(120, 10)
 textSprite.setFlag(SpriteFlag.RelativeToCamera, true)
 Debugger.setHitboxes(false)
 minerals()
-forever(function () {
-    textSprite.setIcon(Block)
-    textSprite.setText("x" + convertToText(Slots[Slot]))
-})
 forever(function () {
     for (let valor42 of tiles.getTilesByType(sprites.castle.tilePath5)) {
         if (tiles.tileAtLocationEquals(valor42.getNeighboringLocation(CollisionDirection.Top), assets.tile`transparency16`)) {
@@ -218,4 +256,8 @@ forever(function () {
         Block = Blocks[Slot]
     }
     info.setScore(Slot)
+})
+forever(function () {
+    textSprite.setIcon(Block)
+    textSprite.setText("x" + convertToText(Slots[Slot]))
 })
