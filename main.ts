@@ -56,6 +56,11 @@ function craft (crft: string) {
         out = assets.tile`miMosaico9`
         craftn = [9]
         outn = 1
+    } else if (crft == "Diamond") {
+        craft2 = [assets.tile`miMosaico9`]
+        out = assets.tile`diamond`
+        craftn = [1]
+        outn = 9
     }
     for (let valor4 of craft2) {
         if (!(0 < Slots[Blocks.indexOf(valor4)])) {
@@ -127,6 +132,7 @@ browserEvents.onMouseMove(function (x, y) {
 function addCrafts () {
     miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks", assets.tile`Planks`), 0)
     miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond Block", assets.tile`miMosaico9`), 0)
+    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond", assets.tile`diamond`), 0)
 }
 function Give (Image2: Image) {
     if (Image2 == sprites.castle.tilePath2) {
@@ -134,8 +140,10 @@ function Give (Image2: Image) {
     } else {
         Slots[Blocks.indexOf(Image2)] = Slots[Slot] + 1
     }
-    tiles.setTileAt(Select.tilemapLocation(), assets.tile`transparency16`)
-    tiles.setWallAt(Select.tilemapLocation(), false)
+    if (!(Image2 == assets.tile`miMosaico3`)) {
+        tiles.setTileAt(Select.tilemapLocation(), assets.tile`transparency16`)
+        tiles.setWallAt(Select.tilemapLocation(), false)
+    }
 }
 browserEvents.MouseRight.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
     Slot += 1
@@ -217,6 +225,7 @@ Slots = [
 0,
 0,
 0,
+0,
 0
 ]
 Blocks = [
@@ -252,12 +261,40 @@ forever(function () {
     }
 })
 forever(function () {
-    if (0 <= Slots[Slot]) {
-        Block = Blocks[Slot]
+    for (let valor of tiles.getTilesByType(assets.tile`Wood`)) {
+        if (Steve.tilemapLocation().row < valor.row) {
+            tiles.setWallAt(valor, true)
+        } else {
+            tiles.setWallAt(valor, false)
+        }
     }
-    info.setScore(Slot)
+    for (let valor of tiles.getTilesByType(assets.tile`miMosaico`)) {
+        if (Steve.tilemapLocation().row < valor.row) {
+            tiles.setWallAt(valor, true)
+        } else {
+            tiles.setWallAt(valor, false)
+        }
+    }
+    if (Steve.tileKindAt(TileDirection.Left, assets.tile`miMosaico3`)) {
+        Mode = 1
+        Steve.setFlag(SpriteFlag.GhostThroughWalls, false)
+        platformer.setGravityEnabled(Steve, true)
+        controller.moveSprite(Steve, 0, 0)
+    }
+    if (Steve.tileKindAt(TileDirection.Right, assets.tile`miMosaico3`)) {
+        Mode = 1
+        Steve.setFlag(SpriteFlag.GhostThroughWalls, false)
+        platformer.setGravityEnabled(Steve, true)
+        controller.moveSprite(Steve, 0, 0)
+    }
 })
 forever(function () {
     textSprite.setIcon(Block)
     textSprite.setText("x" + convertToText(Slots[Slot]))
+})
+forever(function () {
+    if (0 <= Slots[Slot]) {
+        Block = Blocks[Slot]
+    }
+    info.setScore(Slot)
 })
