@@ -38,15 +38,15 @@ function craft (crft: string) {
         craftn = [1]
         outn = 4
     }
-    for (let valor of craft2) {
-        if (!(0 < Slots[Blocks.indexOf(valor)])) {
+    for (let valor4 of craft2) {
+        if (!(0 < Slots[Blocks.indexOf(valor4)])) {
             game.splash("You don't have enought materials.")
             return
         }
     }
-    for (let valor of craft2) {
-        if (0 < Slots[Blocks.indexOf(valor)]) {
-            Slots[Blocks.indexOf(valor)] = Slots[Blocks.indexOf(valor)] - craftn[Blocks.indexOf(valor)]
+    for (let valor5 of craft2) {
+        if (0 < Slots[Blocks.indexOf(valor5)]) {
+            Slots[Blocks.indexOf(valor5)] = Slots[Blocks.indexOf(valor5)] - craftn[Blocks.indexOf(valor5)]
         }
     }
     Slots[Blocks.indexOf(out)] = Slots[Blocks.indexOf(out)] + outn
@@ -124,6 +124,8 @@ browserEvents.MouseRight.onEvent(browserEvents.MouseButtonEvent.Pressed, functio
         Slot = 0
     }
 })
+let vidas = 0
+let filadie = 0
 let fila = 0
 let col = 0
 let worldY = 0
@@ -188,9 +190,9 @@ forever(function () {
     textSprite.setText("x" + convertToText(Slots[Slot]))
 })
 forever(function () {
-    for (let valor4 of tiles.getTilesByType(sprites.castle.tilePath5)) {
-        if (tiles.tileAtLocationEquals(valor4.getNeighboringLocation(CollisionDirection.Top), assets.tile`transparency16`)) {
-            tiles.setTileAt(valor4, sprites.castle.tilePath2)
+    for (let valor42 of tiles.getTilesByType(sprites.castle.tilePath5)) {
+        if (tiles.tileAtLocationEquals(valor42.getNeighboringLocation(CollisionDirection.Top), assets.tile`transparency16`)) {
+            tiles.setTileAt(valor42, sprites.castle.tilePath2)
         }
     }
     for (let valor22 of tiles.getTilesByType(sprites.castle.tilePath2)) {
@@ -204,4 +206,15 @@ forever(function () {
         Block = Blocks[Slot]
     }
     info.setScore(Slot)
+})
+forever(function () {
+    if (!(Steve.isHittingTile(CollisionDirection.Bottom))) {
+        filadie = Steve.tilemapLocation().row
+        vidas = 0
+        while (Steve.isHittingTile(CollisionDirection.Bottom)) {
+            if (filadie + (vidas + 3) < Steve.tilemapLocation().row) {
+                vidas += 1
+            }
+        }
+    }
 })
