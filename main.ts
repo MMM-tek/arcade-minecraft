@@ -19,6 +19,19 @@ function minerals () {
         }
     }
 }
+browserEvents.G.onEvent(browserEvents.KeyEvent.Pressed, function () {
+    if (Mode == 1) {
+        Mode = 0
+        Steve.setFlag(SpriteFlag.GhostThroughWalls, true)
+        platformer.setGravityEnabled(Steve, false)
+        controller.moveSprite(Steve)
+    } else {
+        Mode = 1
+        Steve.setFlag(SpriteFlag.GhostThroughWalls, false)
+        platformer.setGravityEnabled(Steve, true)
+        controller.moveSprite(Steve, 0, 0)
+    }
+})
 function Place () {
     if (1 <= Slots[Slot]) {
         Slots[Slot] = Slots[Slot] - 1
@@ -110,10 +123,10 @@ function addCrafts () {
     miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks", assets.tile`Planks`), 0)
 }
 function Give (Image2: Image) {
-    if (!(Image2 == sprites.castle.tilePath2)) {
-        Slots[Blocks.indexOf(Image2)] = Slots[Slot] + 1
-    } else {
+    if (Image2 == sprites.castle.tilePath2) {
         Slots[Blocks.indexOf(sprites.castle.tilePath5)] = Slots[Slot] + 1
+    } else {
+        Slots[Blocks.indexOf(Image2)] = Slots[Slot] + 1
     }
     tiles.setTileAt(Select.tilemapLocation(), assets.tile`transparency16`)
     tiles.setWallAt(Select.tilemapLocation(), false)
@@ -124,8 +137,6 @@ browserEvents.MouseRight.onEvent(browserEvents.MouseButtonEvent.Pressed, functio
         Slot = 0
     }
 })
-let vidas = 0
-let filadie = 0
 let fila = 0
 let col = 0
 let worldY = 0
@@ -140,6 +151,7 @@ let Block: Image = null
 let Slot = 0
 let Blocks: Image[] = []
 let Slots: number[] = []
+let Mode = 0
 let Select: Sprite = null
 let Steve: Sprite = null
 Steve = platformer.create(assets.image`steve_left1`, SpriteKind.Player)
@@ -151,7 +163,7 @@ scene.setBackgroundColor(9)
 let Title_Game = sprites.create(assets.image`MINECRAFT`, SpriteKind.Title)
 Title_Game.setFlag(SpriteFlag.RelativeToCamera, true)
 Title_Game.setPosition(52, 10)
-let Mode = 1
+Mode = 1
 platformer.moveSprite(Steve, true)
 platformer.setGravity(500, platformer.Direction.Down)
 Slots = [
@@ -206,15 +218,4 @@ forever(function () {
         Block = Blocks[Slot]
     }
     info.setScore(Slot)
-})
-forever(function () {
-    if (!(Steve.isHittingTile(CollisionDirection.Bottom))) {
-        filadie = Steve.tilemapLocation().row
-        vidas = 0
-        while (Steve.isHittingTile(CollisionDirection.Bottom)) {
-            if (filadie + (vidas + 3) < Steve.tilemapLocation().row) {
-                vidas += 1
-            }
-        }
-    }
 })
