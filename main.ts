@@ -25,7 +25,7 @@ browserEvents.G.onEvent(browserEvents.KeyEvent.Pressed, function () {
         Mode = 0
         Steve.setFlag(SpriteFlag.GhostThroughWalls, true)
         platformer.setGravityEnabled(Steve, false)
-        controller.moveSprite(Steve)
+        controller.moveSprite(Steve, 200, 200)
     } else {
         Mode = 1
         Steve.setFlag(SpriteFlag.GhostThroughWalls, false)
@@ -45,6 +45,17 @@ function Place () {
         }
     }
 }
+scene.onOverlapTile(SpriteKind.Player, assets.tile`miMosaico6`, function (sprite, location) {
+    if (World == 1) {
+        World = 0
+        tiles.setCurrentTilemap(tilemap`World`)
+        tiles.placeOnTile(Steve, tiles.getTileLocation(80, 44))
+    } else {
+        World = 1
+        tiles.setCurrentTilemap(tilemap`Nether`)
+        tiles.placeOnTile(Steve, tiles.getTileLocation(7, 59))
+    }
+})
 function craft (crft: string) {
     if (crft == "Planks") {
         craft2 = [assets.tile`Wood`]
@@ -168,6 +179,8 @@ let Slots: number[] = []
 let Mode = 0
 let Select: Sprite = null
 let Steve: Sprite = null
+let World = 0
+World = 0
 let mySprite = sprites.create(img`
     ................................................................................................
     ....ff.fff.ff.f.fff.fff.fff.f...fff.............................................................
@@ -226,6 +239,9 @@ Slots = [
 0,
 0,
 0,
+0,
+0,
+0,
 0
 ]
 Blocks = [
@@ -239,7 +255,10 @@ assets.tile`miMosaico0`,
 assets.tile`miMosaico2`,
 assets.tile`miMosaico1`,
 assets.tile`Planks`,
-assets.tile`miMosaico9`
+assets.tile`miMosaico9`,
+assets.tile`miMosaico4`,
+assets.tile`miMosaico5`,
+assets.tile`miMosaico6`
 ]
 Slot = 0
 let textSprite = textsprite.create("")
