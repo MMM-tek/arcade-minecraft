@@ -5,17 +5,17 @@ namespace SpriteKind {
 }
 function minerals () {
     for (let valor of tiles.getTilesByType(assets.tile`dark_rock`)) {
-        if (Math.percentChance(8)) {
+        if (Math.percentChance(5)) {
             tiles.setTileAt(valor, assets.tile`miMosaico0`)
         }
     }
     for (let valor2 of tiles.getTilesByType(assets.tile`dark_rock`)) {
-        if (Math.percentChance(7)) {
+        if (Math.percentChance(4)) {
             tiles.setTileAt(valor2, assets.tile`miMosaico2`)
         }
     }
     for (let valor3 of tiles.getTilesByType(assets.tile`dark_rock`)) {
-        if (Math.percentChance(4)) {
+        if (Math.percentChance(1)) {
             tiles.setTileAt(valor3, assets.tile`diamond`)
         }
     }
@@ -280,18 +280,18 @@ forever(function () {
     }
 })
 forever(function () {
-    for (let valor of tiles.getTilesByType(assets.tile`Wood`)) {
-        if (Steve.tilemapLocation().row < valor.row) {
-            tiles.setWallAt(valor, true)
+    for (let valor6 of tiles.getTilesByType(assets.tile`Wood`)) {
+        if (Steve.tilemapLocation().row < valor6.row) {
+            tiles.setWallAt(valor6, true)
         } else {
-            tiles.setWallAt(valor, false)
+            tiles.setWallAt(valor6, false)
         }
     }
-    for (let valor of tiles.getTilesByType(assets.tile`miMosaico`)) {
-        if (Steve.tilemapLocation().row < valor.row) {
-            tiles.setWallAt(valor, true)
+    for (let valor7 of tiles.getTilesByType(assets.tile`miMosaico`)) {
+        if (Steve.tilemapLocation().row < valor7.row) {
+            tiles.setWallAt(valor7, true)
         } else {
-            tiles.setWallAt(valor, false)
+            tiles.setWallAt(valor7, false)
         }
     }
     if (Steve.tileKindAt(TileDirection.Left, assets.tile`miMosaico3`)) {
