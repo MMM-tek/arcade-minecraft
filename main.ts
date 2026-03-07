@@ -20,23 +20,32 @@ function minerals () {
         }
     }
 }
-browserEvents.G.onEvent(browserEvents.KeyEvent.Pressed, function () {
-    if (Mode == 1) {
-        Mode = 0
-        Steve.setFlag(SpriteFlag.GhostThroughWalls, true)
-        platformer.setGravityEnabled(Steve, false)
-        controller.moveSprite(Steve, 200, 200)
+browserEvents.MouseLeft.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
+    if (!(tiles.tileAtLocationEquals(Select.tilemapLocation(), assets.tile`transparency16`))) {
+        myImage = tiles.tileImageAtLocation(Select.tilemapLocation())
+        Give(myImage)
     } else {
-        Mode = 1
-        Steve.setFlag(SpriteFlag.GhostThroughWalls, false)
-        platformer.setGravityEnabled(Steve, true)
-        controller.moveSprite(Steve, 0, 0)
+        Place()
     }
+})
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (Mode == 1) {
+        Change_Slot()
+    }
+})
+function Change_Slot () {
+    Slot += 1
+    if (Slots.length == Slot) {
+        Slot = 0
+    }
+}
+browserEvents.G.onEvent(browserEvents.KeyEvent.Pressed, function () {
+    Game_Mode()
 })
 function Place () {
     if (1 <= Slots[Slot]) {
         Slots[Slot] = Slots[Slot] - 1
-        if (Block == assets.tile`Wood`) {
+        if (Block == assets.tile`Wood` || Block == assets.tile`miMosaico`) {
             tiles.setTileAt(Select.tilemapLocation(), Block)
             tiles.setWallAt(Select.tilemapLocation(), false)
         } else {
@@ -45,17 +54,6 @@ function Place () {
         }
     }
 }
-scene.onOverlapTile(SpriteKind.Player, assets.tile`miMosaico6`, function (sprite, location) {
-    if (World == 1) {
-        World = 0
-        tiles.setCurrentTilemap(tilemap`World`)
-        tiles.placeOnTile(Steve, tiles.getTileLocation(80, 44))
-    } else {
-        World = 1
-        tiles.setCurrentTilemap(tilemap`Nether`)
-        tiles.placeOnTile(Steve, tiles.getTileLocation(7, 59))
-    }
-})
 function craft (crft: string) {
     if (crft == "Planks") {
         craft2 = [assets.tile`Wood`]
@@ -73,6 +71,26 @@ function craft (crft: string) {
         craftn = [1]
         outn = 9
     }
+    Crafting()
+}
+browserEvents.R.onEvent(browserEvents.KeyEvent.Pressed, function () {
+    Craft()
+})
+controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
+    Craft()
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`miMosaico6`, function (sprite, location) {
+    if (World == 1) {
+        World = 0
+        tiles.setCurrentTilemap(tilemap`World`)
+        tiles.placeOnTile(Steve, tiles.getTileLocation(80, 44))
+    } else {
+        World = 1
+        tiles.setCurrentTilemap(tilemap`Nether`)
+        tiles.placeOnTile(Steve, tiles.getTileLocation(7, 59))
+    }
+})
+function Crafting () {
     for (let valor4 of craft2) {
         if (!(0 < Slots[Blocks.indexOf(valor4)])) {
             return
@@ -85,18 +103,56 @@ function craft (crft: string) {
     }
     Slots[Blocks.indexOf(out)] = Slots[Blocks.indexOf(out)] + outn
 }
-browserEvents.MouseLeft.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
-    if (!(tiles.tileAtLocationEquals(Select.tilemapLocation(), assets.tile`transparency16`))) {
-        myImage = tiles.tileImageAtLocation(Select.tilemapLocation())
-        Give(myImage)
-    } else {
-        Place()
-    }
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    Game_Mode()
+})
+platformer.onRuleBecomesTrue(platformer.rule(platformer.PlatformerSpriteState.FacingLeft), platformer.EventHandlerCondition.BecomesTrue, function (sprite) {
+    Steve.setImage(assets.image`steve_left2`)
 })
 platformer.onRuleBecomesTrue(platformer.rule(platformer.PlatformerSpriteState.FacingRight), platformer.EventHandlerCondition.BecomesTrue, function (sprite) {
     Steve.setImage(assets.image`steve_right0`)
 })
-browserEvents.R.onEvent(browserEvents.KeyEvent.Pressed, function () {
+function Game_Mode () {
+    if (Mode == 1) {
+        Mode = 0
+        Steve.setFlag(SpriteFlag.GhostThroughWalls, true)
+        platformer.setGravityEnabled(Steve, false)
+        controller.moveSprite(Steve, 200, 200)
+    } else {
+        Mode = 1
+        Steve.setFlag(SpriteFlag.GhostThroughWalls, false)
+        platformer.setGravityEnabled(Steve, true)
+        controller.moveSprite(Steve, 0, 0)
+    }
+}
+function addCrafts () {
+    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks", assets.tile`Planks`), 0)
+    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond Block", assets.tile`miMosaico9`), 0)
+    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond", assets.tile`diamond`), 0)
+}
+// Evento de la extensión browser-events
+browserEvents.onMouseMove(function (x, y) {
+    // IMPORTANTE: 'x' e 'y' son relativos a la pantalla (0-160)
+    // Para obtener la posición en el mapa real, sumamos el desplazamiento de la cámara
+    worldX = x + scene.cameraLeft()
+    worldY = y + scene.cameraTop()
+    // Dividimos por 16 (tamaño de cada tile) y redondeamos hacia abajo
+    col = Math.floor(worldX / 16)
+    fila = Math.floor(worldY / 16)
+    tiles.placeOnTile(Select, tiles.getTileLocation(col, fila))
+})
+function Give (Image2: Image) {
+    if (Image2 == sprites.castle.tilePath2) {
+        Slots[Blocks.indexOf(sprites.castle.tilePath5)] = Slots[Slot] + 1
+    } else {
+        Slots[Blocks.indexOf(Image2)] = Slots[Slot] + 1
+    }
+    if (!(Image2 == assets.tile`miMosaico3`)) {
+        tiles.setTileAt(Select.tilemapLocation(), assets.tile`transparency16`)
+        tiles.setWallAt(Select.tilemapLocation(), false)
+    }
+}
+function Craft () {
     myMenu = miniMenu.createMenu(
     miniMenu.createMenuItem("CRAFT", img`
         . . . . . . . . . . . . . . . . 
@@ -125,53 +181,20 @@ browserEvents.R.onEvent(browserEvents.KeyEvent.Pressed, function () {
         craft(selection)
         miniMenu.close(myMenu)
     })
-})
-platformer.onRuleBecomesTrue(platformer.rule(platformer.PlatformerSpriteState.FacingLeft), platformer.EventHandlerCondition.BecomesTrue, function (sprite) {
-    Steve.setImage(assets.image`steve_left2`)
-})
-// Evento de la extensión browser-events
-browserEvents.onMouseMove(function (x, y) {
-    // IMPORTANTE: 'x' e 'y' son relativos a la pantalla (0-160)
-    // Para obtener la posición en el mapa real, sumamos el desplazamiento de la cámara
-    worldX = x + scene.cameraLeft()
-    worldY = y + scene.cameraTop()
-    // Dividimos por 16 (tamaño de cada tile) y redondeamos hacia abajo
-    col = Math.floor(worldX / 16)
-    fila = Math.floor(worldY / 16)
-    tiles.placeOnTile(Select, tiles.getTileLocation(col, fila))
-})
-function addCrafts () {
-    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks", assets.tile`Planks`), 0)
-    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond Block", assets.tile`miMosaico9`), 0)
-    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond", assets.tile`diamond`), 0)
-}
-function Give (Image2: Image) {
-    if (Image2 == sprites.castle.tilePath2) {
-        Slots[Blocks.indexOf(sprites.castle.tilePath5)] = Slots[Slot] + 1
-    } else {
-        Slots[Blocks.indexOf(Image2)] = Slots[Slot] + 1
-    }
-    if (!(Image2 == assets.tile`miMosaico3`)) {
-        tiles.setTileAt(Select.tilemapLocation(), assets.tile`transparency16`)
-        tiles.setWallAt(Select.tilemapLocation(), false)
-    }
 }
 browserEvents.MouseRight.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
-    Slot += 1
-    if (Slots.length == Slot) {
-        Slot = 0
-    }
+    Change_Slot()
 })
 let fila = 0
 let col = 0
 let worldY = 0
 let worldX = 0
 let myMenu: Sprite = null
-let myImage: Image = null
 let outn = 0
 let craftn: number[] = []
 let out: Image = null
 let craft2: Image[] = []
+let myImage: Image = null
 let Block: Image = null
 let Slot = 0
 let Blocks: Image[] = []
@@ -266,7 +289,17 @@ Block = assets.tile`transparency16`
 textSprite.setPosition(120, 10)
 textSprite.setFlag(SpriteFlag.RelativeToCamera, true)
 Debugger.setHitboxes(false)
+Debugger.setFPS(false)
 minerals()
+forever(function () {
+    textSprite.setIcon(Block)
+    textSprite.setText("x" + convertToText(Slots[Slot]))
+})
+forever(function () {
+    if (0 <= Slots[Slot]) {
+        Block = Blocks[Slot]
+    }
+})
 forever(function () {
     for (let valor42 of tiles.getTilesByType(sprites.castle.tilePath5)) {
         if (tiles.tileAtLocationEquals(valor42.getNeighboringLocation(CollisionDirection.Top), assets.tile`transparency16`)) {
@@ -306,14 +339,4 @@ forever(function () {
         platformer.setGravityEnabled(Steve, true)
         controller.moveSprite(Steve, 0, 0)
     }
-})
-forever(function () {
-    textSprite.setIcon(Block)
-    textSprite.setText("x" + convertToText(Slots[Slot]))
-})
-forever(function () {
-    if (0 <= Slots[Slot]) {
-        Block = Blocks[Slot]
-    }
-    info.setScore(Slot)
 })
