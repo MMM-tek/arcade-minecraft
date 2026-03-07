@@ -3,6 +3,19 @@ namespace SpriteKind {
     export const Mouse = SpriteKind.create()
     export const Tutorial = SpriteKind.create()
 }
+function Game_Mode () {
+    if (Mode == 1) {
+        Mode = 0
+        Steve.setFlag(SpriteFlag.GhostThroughWalls, true)
+        platformer.setGravityEnabled(Steve, false)
+        controller.moveSprite(Steve, 200, 200)
+    } else {
+        Mode = 1
+        Steve.setFlag(SpriteFlag.GhostThroughWalls, false)
+        platformer.setGravityEnabled(Steve, true)
+        controller.moveSprite(Steve, 0, 0)
+    }
+}
 function minerals () {
     for (let valor of tiles.getTilesByType(assets.tile`dark_rock`)) {
         if (Math.percentChance(5)) {
@@ -33,12 +46,6 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         Change_Slot()
     }
 })
-function Change_Slot () {
-    Slot += 1
-    if (Slots.length == Slot) {
-        Slot = 0
-    }
-}
 browserEvents.G.onEvent(browserEvents.KeyEvent.Pressed, function () {
     Game_Mode()
 })
@@ -114,19 +121,6 @@ platformer.onRuleBecomesTrue(platformer.rule(platformer.PlatformerSpriteState.Fa
 platformer.onRuleBecomesTrue(platformer.rule(platformer.PlatformerSpriteState.FacingRight), platformer.EventHandlerCondition.BecomesTrue, function (sprite) {
     Steve.setImage(assets.image`steve_right0`)
 })
-function Game_Mode () {
-    if (Mode == 1) {
-        Mode = 0
-        Steve.setFlag(SpriteFlag.GhostThroughWalls, true)
-        platformer.setGravityEnabled(Steve, false)
-        controller.moveSprite(Steve, 200, 200)
-    } else {
-        Mode = 1
-        Steve.setFlag(SpriteFlag.GhostThroughWalls, false)
-        platformer.setGravityEnabled(Steve, true)
-        controller.moveSprite(Steve, 0, 0)
-    }
-}
 function addCrafts () {
     miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks", assets.tile`Planks`), 0)
     miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond Block", assets.tile`miMosaico9`), 0)
@@ -143,9 +137,15 @@ browserEvents.onMouseMove(function (x, y) {
     fila = Math.floor(worldY / 16)
     tiles.placeOnTile(Select, tiles.getTileLocation(col, fila))
 })
+function Change_Slot () {
+    Slot += 1
+    if (Slots.length == Slot) {
+        Slot = 0
+    }
+}
 function Give (Image2: Image) {
     if (Image2 == sprites.castle.tilePath2) {
-        Slots[Blocks.indexOf(sprites.castle.tilePath5)] = Slots[Slot] + 1
+        Slots[Blocks.indexOf(assets.tile`miMosaico3`)] = Slots[Slot] + 1
     } else {
         Slots[Blocks.indexOf(Image2)] = Slots[Slot] + 1
     }
@@ -155,34 +155,38 @@ function Give (Image2: Image) {
     }
 }
 function Craft () {
-    myMenu = miniMenu.createMenu(
-    miniMenu.createMenuItem("CRAFT", img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, true)
-    )
-    addCrafts()
-    myMenu.setFlag(SpriteFlag.RelativeToCamera, true)
-    miniMenu.setDimensions(myMenu, 160, 120)
-    myMenu.setPosition(80, 60)
-    miniMenu.onButtonPressed(myMenu, miniMenu.Button.A, function (selection, selectedIndex) {
-        craft(selection)
-        miniMenu.close(myMenu)
-    })
+    if (menu == 0) {
+        menu = 1
+        myMenu = miniMenu.createMenu(
+        miniMenu.createMenuItem("CRAFT", img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, true)
+        )
+        addCrafts()
+        myMenu.setFlag(SpriteFlag.RelativeToCamera, true)
+        miniMenu.setDimensions(myMenu, 160, 120)
+        myMenu.setPosition(80, 60)
+        miniMenu.onButtonPressed(myMenu, miniMenu.Button.A, function (selection, selectedIndex) {
+            menu = 0
+            craft(selection)
+            miniMenu.close(myMenu)
+        })
+    }
 }
 browserEvents.MouseRight.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
     Change_Slot()
@@ -197,6 +201,7 @@ let craftn: number[] = []
 let out: Image = null
 let craft2: Image[] = []
 let myImage: Image = null
+let menu = 0
 let Block: Image = null
 let Slot = 0
 let Blocks: Image[] = []
@@ -294,6 +299,7 @@ textSprite.setFlag(SpriteFlag.RelativeToCamera, true)
 Debugger.setHitboxes(false)
 Debugger.setFPS(false)
 minerals()
+menu = 0
 forever(function () {
     textSprite.setIcon(Block)
     textSprite.setText("x" + convertToText(Slots[Slot]))
