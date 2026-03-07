@@ -11,7 +11,8 @@
         "browser-events": "*",
         "Debuger": "github:mmm-tek/arcade-debuger#master",
         "arcade-mini-menu": "github:riknoll/arcade-mini-menu#v0.1.0",
-        "Notifications": "github:unsignedarduino/notifications#master"
+        "Notifications": "github:unsignedarduino/notifications#master",
+        "Dinamic Day": "github:mmm-tek/dinamic-day#609f935a0cc096e69df9192643ff00bbadb87581"
     },
     "files": [
         "main.blocks",

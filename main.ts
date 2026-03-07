@@ -77,7 +77,9 @@ browserEvents.R.onEvent(browserEvents.KeyEvent.Pressed, function () {
     Craft()
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
-    Craft()
+    if (Mode == 1) {
+        Craft()
+    }
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`miMosaico6`, function (sprite, location) {
     if (World == 1) {
@@ -203,6 +205,7 @@ let Mode = 0
 let Select: Sprite = null
 let Steve: Sprite = null
 let World = 0
+dynamicDay.start(30000, 15000)
 World = 0
 let mySprite = sprites.create(img`
     ................................................................................................
