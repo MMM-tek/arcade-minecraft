@@ -210,7 +210,6 @@ let Mode = 0
 let Select: Sprite = null
 let Steve: Sprite = null
 let World = 0
-dynamicDay.start(30000, 15000)
 World = 0
 let mySprite = sprites.create(img`
     ................................................................................................
