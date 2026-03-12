@@ -61,6 +61,15 @@ function Place () {
         }
     }
 }
+function SaveWorld () {
+    Save = []
+    for (let índice = 0; índice <= 31; índice++) {
+        row = []
+        for (let indice2 = 0; indice2 <= 31; indice2++) {
+            row.push(ID.indexOf(tiles.tileImageAtLocation(tiles.getTileLocation(indice2, índice))))
+        }
+    }
+}
 function craft (crft: string) {
     if (crft == "Planks") {
         craft2 = [assets.tile`Wood`]
@@ -92,11 +101,11 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`miMosaico6`, function (sprite
     if (World == 1) {
         World = 0
         tiles.setCurrentTilemap(tilemap`World`)
-        tiles.placeOnTile(Steve, tiles.getTileLocation(80, 44))
+        tiles.placeOnTile(Steve, tiles.getTileLocation(26, 23))
     } else {
         World = 1
         tiles.setCurrentTilemap(tilemap`Nether`)
-        tiles.placeOnTile(Steve, tiles.getTileLocation(7, 59))
+        tiles.placeOnTile(Steve, tiles.getTileLocation(21, 7))
     }
 })
 function Crafting () {
@@ -144,8 +153,16 @@ function Change_Slot () {
     }
 }
 function Give (Image2: Image) {
+    if (Blocks.indexOf(Image2) == -1) {
+        Slots.push(0 + 0)
+        if (Image2 == sprites.castle.tilePath2) {
+            Blocks.push(sprites.castle.tilePath5)
+        } else {
+            Blocks.push(Image2)
+        }
+    }
     if (Image2 == sprites.castle.tilePath2) {
-        Slots[Blocks.indexOf(assets.tile`miMosaico3`)] = Slots[Slot] + 1
+        Slots[Blocks.indexOf(sprites.castle.tilePath5)] = Slots[Slot] + 1
     } else {
         Slots[Blocks.indexOf(Image2)] = Slots[Slot] + 1
     }
@@ -200,10 +217,13 @@ let outn = 0
 let craftn: number[] = []
 let out: Image = null
 let craft2: Image[] = []
+let row: number[] = []
+let Save: number[] = []
 let myImage: Image = null
 let menu = 0
 let Block: Image = null
 let Slot = 0
+let ID: Image[] = []
 let Blocks: Image[] = []
 let Slots: number[] = []
 let Mode = 0
@@ -258,37 +278,26 @@ Title_Game.setPosition(52, 10)
 Mode = 1
 platformer.moveSprite(Steve, true)
 platformer.setGravity(500, platformer.Direction.Down)
-Slots = [
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0
-]
-Blocks = [
-sprites.castle.tilePath5,
+Slots = []
+Blocks = []
+ID = [
+assets.tile`transparency16`,
 assets.tile`Wood`,
 assets.tile`Stone`,
 assets.tile`miMosaico`,
 assets.tile`dark_rock`,
 assets.tile`diamond`,
 assets.tile`miMosaico0`,
-assets.tile`miMosaico2`,
 assets.tile`miMosaico1`,
+assets.tile`miMosaico2`,
 assets.tile`Planks`,
-assets.tile`miMosaico9`,
+assets.tile`miMosaico3`,
 assets.tile`miMosaico4`,
 assets.tile`miMosaico5`,
-assets.tile`miMosaico6`
+assets.tile`miMosaico6`,
+assets.tile`miMosaico9`,
+sprites.castle.tilePath2,
+sprites.castle.tilePath5
 ]
 Slot = 0
 let textSprite = textsprite.create("")
@@ -306,6 +315,12 @@ forever(function () {
 forever(function () {
     if (0 <= Slots[Slot]) {
         Block = Blocks[Slot]
+        for (let valor of Blocks) {
+            if (Slots[Blocks.indexOf(valor)] == 0) {
+                Slots.removeAt(Blocks.indexOf(valor))
+                Blocks.removeAt(Blocks.indexOf(valor))
+            }
+        }
     }
 })
 forever(function () {

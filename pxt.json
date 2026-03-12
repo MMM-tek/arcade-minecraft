@@ -11,7 +11,8 @@
         "browser-events": "*",
         "Debuger": "github:mmm-tek/arcade-debuger#master",
         "arcade-mini-menu": "github:riknoll/arcade-mini-menu#v0.1.0",
-        "Dinamic Day": "github:mmm-tek/dinamic-day#609f935a0cc096e69df9192643ff00bbadb87581"
+        "Dinamic Day": "github:mmm-tek/dinamic-day#609f935a0cc096e69df9192643ff00bbadb87581",
+        "settings-blocks": "github:microsoft/pxt-settings-blocks#v1.0.0"
     },
     "files": [
         "main.blocks",
