@@ -33,19 +33,6 @@ function minerals () {
         }
     }
 }
-browserEvents.MouseLeft.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
-    if (!(tiles.tileAtLocationEquals(Select.tilemapLocation(), assets.tile`transparency16`))) {
-        myImage = tiles.tileImageAtLocation(Select.tilemapLocation())
-        Give(myImage)
-    } else {
-        Place()
-    }
-})
-controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (Mode == 1) {
-        Change_Slot()
-    }
-})
 browserEvents.G.onEvent(browserEvents.KeyEvent.Pressed, function () {
     Game_Mode()
 })
@@ -61,15 +48,30 @@ function Place () {
         }
     }
 }
-function SaveWorld () {
+scene.onOverlapTile(SpriteKind.Player, assets.tile`miMosaico6`, function (sprite, location) {
+    if (World == 1) {
+        World = 0
+        LoadWorld("Overworld")
+        tiles.placeOnTile(Steve, tiles.getTileLocation(26, 23))
+    } else {
+        World = 1
+        SaveWorld("Overworld")
+        tiles.setCurrentTilemap(tilemap`Nether`)
+        tiles.placeOnTile(Steve, tiles.getTileLocation(21, 7))
+    }
+})
+function SaveWorld (World: string) {
     Save = []
     for (let índice = 0; índice <= 31; índice++) {
-        row = []
         for (let indice2 = 0; indice2 <= 31; indice2++) {
-            row.push(ID.indexOf(tiles.tileImageAtLocation(tiles.getTileLocation(indice2, índice))))
+            Save.push(ID.indexOf(tiles.tileImageAtLocation(tiles.getTileLocation(indice2, índice))))
         }
     }
+    blockSettings.writeNumberArray(World, Save)
 }
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    Game_Mode()
+})
 function craft (crft: string) {
     if (crft == "Planks") {
         craft2 = [assets.tile`Wood`]
@@ -89,24 +91,21 @@ function craft (crft: string) {
     }
     Crafting()
 }
-browserEvents.R.onEvent(browserEvents.KeyEvent.Pressed, function () {
-    Craft()
+browserEvents.MouseLeft.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
+    if (!(tiles.tileAtLocationEquals(Select.tilemapLocation(), assets.tile`transparency16`))) {
+        myImage = tiles.tileImageAtLocation(Select.tilemapLocation())
+        Give(myImage)
+    } else {
+        Place()
+    }
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     if (Mode == 1) {
         Craft()
     }
 })
-scene.onOverlapTile(SpriteKind.Player, assets.tile`miMosaico6`, function (sprite, location) {
-    if (World == 1) {
-        World = 0
-        tiles.setCurrentTilemap(tilemap`World`)
-        tiles.placeOnTile(Steve, tiles.getTileLocation(26, 23))
-    } else {
-        World = 1
-        tiles.setCurrentTilemap(tilemap`Nether`)
-        tiles.placeOnTile(Steve, tiles.getTileLocation(21, 7))
-    }
+platformer.onRuleBecomesTrue(platformer.rule(platformer.PlatformerSpriteState.FacingRight), platformer.EventHandlerCondition.BecomesTrue, function (sprite) {
+    Steve.setImage(assets.image`steve_right0`)
 })
 function Crafting () {
     for (let valor4 of craft2) {
@@ -121,20 +120,12 @@ function Crafting () {
     }
     Slots[Blocks.indexOf(out)] = Slots[Blocks.indexOf(out)] + outn
 }
-controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    Game_Mode()
+browserEvents.R.onEvent(browserEvents.KeyEvent.Pressed, function () {
+    Craft()
 })
 platformer.onRuleBecomesTrue(platformer.rule(platformer.PlatformerSpriteState.FacingLeft), platformer.EventHandlerCondition.BecomesTrue, function (sprite) {
     Steve.setImage(assets.image`steve_left2`)
 })
-platformer.onRuleBecomesTrue(platformer.rule(platformer.PlatformerSpriteState.FacingRight), platformer.EventHandlerCondition.BecomesTrue, function (sprite) {
-    Steve.setImage(assets.image`steve_right0`)
-})
-function addCrafts () {
-    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks", assets.tile`Planks`), 0)
-    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond Block", assets.tile`miMosaico9`), 0)
-    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond", assets.tile`diamond`), 0)
-}
 // Evento de la extensión browser-events
 browserEvents.onMouseMove(function (x, y) {
     // IMPORTANTE: 'x' e 'y' son relativos a la pantalla (0-160)
@@ -142,9 +133,19 @@ browserEvents.onMouseMove(function (x, y) {
     worldX = x + scene.cameraLeft()
     worldY = y + scene.cameraTop()
     // Dividimos por 16 (tamaño de cada tile) y redondeamos hacia abajo
-    col = Math.floor(worldX / 16)
-    fila = Math.floor(worldY / 16)
-    tiles.placeOnTile(Select, tiles.getTileLocation(col, fila))
+    col2 = Math.floor(worldX / 16)
+    fila2 = Math.floor(worldY / 16)
+    tiles.placeOnTile(Select, tiles.getTileLocation(col2, fila2))
+})
+function addCrafts () {
+    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Planks", assets.tile`Planks`), 0)
+    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond Block", assets.tile`miMosaico9`), 0)
+    miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond", assets.tile`diamond`), 0)
+}
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (Mode == 1) {
+        Change_Slot()
+    }
 })
 function Change_Slot () {
     Slot += 1
@@ -171,6 +172,9 @@ function Give (Image2: Image) {
         tiles.setWallAt(Select.tilemapLocation(), false)
     }
 }
+browserEvents.MouseRight.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
+    Change_Slot()
+})
 function Craft () {
     if (menu == 0) {
         menu = 1
@@ -205,21 +209,45 @@ function Craft () {
         })
     }
 }
-browserEvents.MouseRight.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
-    Change_Slot()
-})
-let fila = 0
-let col = 0
+function LoadWorld (World: string) {
+    tempLoad = blockSettings.readNumberArray(World)
+    // Si no hay datos guardados, no intentes cargar
+    if (!(tempLoad) || tempLoad.length == 0) {
+        game.showLongText("No hay mundo guardado", DialogLayout.Bottom)
+        return
+    }
+    Load = tempLoad
+    // ¡Asegúrate que sea de 32x32!
+    tiles.setCurrentTilemap(tilemap`blank`)
+    for (let fila = 0; fila <= 31; fila++) {
+        for (let col = 0; col <= 31; col++) {
+            dataIndex = col + fila * 32
+            tileId = Load[dataIndex]
+            // Verificamos que el ID sea válido antes de pintar
+            if (tileId < ID.length) {
+                tiles.setTileAt(tiles.getTileLocation(col, fila), ID[tileId])
+                if (ID[tileId] != assets.tile`transparency16`) {
+                    tiles.setWallAt(tiles.getTileLocation(col, fila), true)
+                }
+            }
+        }
+    }
+}
+let tileId = 0
+let dataIndex = 0
+let Load: number[] = []
+let tempLoad: number[] = []
+let myMenu: Sprite = null
+let fila2 = 0
+let col2 = 0
 let worldY = 0
 let worldX = 0
-let myMenu: Sprite = null
+let myImage: Image = null
 let outn = 0
 let craftn: number[] = []
 let out: Image = null
 let craft2: Image[] = []
-let row: number[] = []
 let Save: number[] = []
-let myImage: Image = null
 let menu = 0
 let Block: Image = null
 let Slot = 0
@@ -230,6 +258,10 @@ let Mode = 0
 let Select: Sprite = null
 let Steve: Sprite = null
 let World = 0
+tiles.setCurrentTilemap(tilemap`Nether`)
+SaveWorld("Nether")
+tiles.setCurrentTilemap(tilemap`World`)
+SaveWorld("Overworld")
 World = 0
 let mySprite = sprites.create(img`
     ................................................................................................
@@ -268,7 +300,6 @@ let mySprite = sprites.create(img`
 Steve = platformer.create(assets.image`steve_left1`, SpriteKind.Player)
 Select = sprites.create(assets.image`cursor_6`, SpriteKind.Mouse)
 scene.cameraFollowSprite(Steve)
-tiles.setCurrentTilemap(tilemap`World`)
 tiles.placeOnTile(Steve, tiles.getTileLocation(5, 13))
 tiles.placeOnTile(mySprite, tiles.getTileLocation(5, 12))
 scene.setBackgroundColor(9)
@@ -315,10 +346,10 @@ forever(function () {
 forever(function () {
     if (0 <= Slots[Slot]) {
         Block = Blocks[Slot]
-        for (let valor of Blocks) {
-            if (Slots[Blocks.indexOf(valor)] == 0) {
-                Slots.removeAt(Blocks.indexOf(valor))
-                Blocks.removeAt(Blocks.indexOf(valor))
+        for (let valor6 of Blocks) {
+            if (Slots[Blocks.indexOf(valor6)] == 0) {
+                Slots.removeAt(Blocks.indexOf(valor6))
+                Blocks.removeAt(Blocks.indexOf(valor6))
             }
         }
     }
@@ -336,11 +367,11 @@ forever(function () {
     }
 })
 forever(function () {
-    for (let valor6 of tiles.getTilesByType(assets.tile`Wood`)) {
-        if (Steve.tilemapLocation().row < valor6.row) {
-            tiles.setWallAt(valor6, true)
+    for (let valor62 of tiles.getTilesByType(assets.tile`Wood`)) {
+        if (Steve.tilemapLocation().row < valor62.row) {
+            tiles.setWallAt(valor62, true)
         } else {
-            tiles.setWallAt(valor6, false)
+            tiles.setWallAt(valor62, false)
         }
     }
     for (let valor7 of tiles.getTilesByType(assets.tile`miMosaico`)) {
