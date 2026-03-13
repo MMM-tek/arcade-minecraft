@@ -5,6 +5,8 @@ namespace SpriteKind {
 }
 function Game_Mode () {
     if (Mode == 1) {
+        Mode = 2
+    } else if (Mode == 2) {
         Mode = 0
         Steve.setFlag(SpriteFlag.GhostThroughWalls, true)
         platformer.setGravityEnabled(Steve, false)
@@ -100,7 +102,7 @@ browserEvents.MouseLeft.onEvent(browserEvents.MouseButtonEvent.Pressed, function
     }
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (Mode == 1) {
+    if (Mode == 2) {
         Craft()
     }
 })
@@ -143,7 +145,7 @@ function addCrafts () {
     miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond", assets.tile`diamond`), 0)
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (Mode == 1) {
+    if (Mode == 2) {
         Change_Slot()
     }
 })
@@ -258,6 +260,12 @@ let Mode = 0
 let Select: Sprite = null
 let Steve: Sprite = null
 let World = 0
+let Console = false
+if (game.ask("PC A CONSOLE B")) {
+    Console = false
+} else {
+    Console = true
+}
 tiles.setCurrentTilemap(tilemap`Nether`)
 SaveWorld("Nether")
 tiles.setCurrentTilemap(tilemap`World`)
@@ -344,7 +352,7 @@ forever(function () {
     textSprite.setText("x" + convertToText(Slots[Slot]))
 })
 forever(function () {
-    if (0 <= Slots[Slot]) {
+    if (0 < Slots[Slot]) {
         Block = Blocks[Slot]
         for (let valor6 of Blocks) {
             if (Slots[Blocks.indexOf(valor6)] == 0) {
