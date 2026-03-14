@@ -5,17 +5,11 @@ namespace SpriteKind {
 }
 function Game_Mode () {
     if (Mode == 1) {
-        Mode = 2
-    } else if (Mode == 2) {
         Mode = 0
-        Steve.setFlag(SpriteFlag.GhostThroughWalls, true)
-        platformer.setGravityEnabled(Steve, false)
-        controller.moveSprite(Steve, 200, 200)
+        Spectator(true)
     } else {
         Mode = 1
-        Steve.setFlag(SpriteFlag.GhostThroughWalls, false)
-        platformer.setGravityEnabled(Steve, true)
-        controller.moveSprite(Steve, 0, 0)
+        Spectator(false)
     }
 }
 function minerals () {
@@ -38,6 +32,14 @@ function minerals () {
 browserEvents.G.onEvent(browserEvents.KeyEvent.Pressed, function () {
     Game_Mode()
 })
+function Cursor () {
+    if (!(tiles.tileAtLocationEquals(Select.tilemapLocation(), assets.tile`transparency16`))) {
+        myImage = tiles.tileImageAtLocation(Select.tilemapLocation())
+        Give(myImage)
+    } else {
+        Place()
+    }
+}
 function Place () {
     if (1 <= Slots[Slot]) {
         Slots[Slot] = Slots[Slot] - 1
@@ -48,6 +50,11 @@ function Place () {
             tiles.setTileAt(Select.tilemapLocation(), Block)
             tiles.setWallAt(Select.tilemapLocation(), true)
         }
+    }
+    if (Slots[Slot] == 0) {
+        Slots.removeAt(Slots[Slot])
+        Blocks.removeAt(Slots[Slot])
+        Block = assets.tile`transparency16`
     }
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`miMosaico6`, function (sprite, location) {
@@ -94,15 +101,10 @@ function craft (crft: string) {
     Crafting()
 }
 browserEvents.MouseLeft.onEvent(browserEvents.MouseButtonEvent.Pressed, function (x, y) {
-    if (!(tiles.tileAtLocationEquals(Select.tilemapLocation(), assets.tile`transparency16`))) {
-        myImage = tiles.tileImageAtLocation(Select.tilemapLocation())
-        Give(myImage)
-    } else {
-        Place()
-    }
+    Cursor()
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (Mode == 2) {
+    if (Mode == 1) {
         Craft()
     }
 })
@@ -145,10 +147,21 @@ function addCrafts () {
     miniMenu.insertMenuItem(myMenu, miniMenu.createMenuItem("Diamond", assets.tile`diamond`), 0)
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (Mode == 2) {
+    if (Mode == 1) {
         Change_Slot()
     }
 })
+function Spectator (booleano: boolean) {
+    if (booleano) {
+        Steve.setFlag(SpriteFlag.GhostThroughWalls, true)
+        platformer.setGravityEnabled(Steve, false)
+        controller.moveSprite(Steve, 200, 200)
+    } else {
+        Steve.setFlag(SpriteFlag.GhostThroughWalls, false)
+        platformer.setGravityEnabled(Steve, true)
+        controller.moveSprite(Steve, 0, 0)
+    }
+}
 function Change_Slot () {
     Slot += 1
     if (Slots.length == Slot) {
@@ -244,12 +257,12 @@ let fila2 = 0
 let col2 = 0
 let worldY = 0
 let worldX = 0
-let myImage: Image = null
 let outn = 0
 let craftn: number[] = []
 let out: Image = null
 let craft2: Image[] = []
 let Save: number[] = []
+let myImage: Image = null
 let menu = 0
 let Block: Image = null
 let Slot = 0
@@ -260,12 +273,6 @@ let Mode = 0
 let Select: Sprite = null
 let Steve: Sprite = null
 let World = 0
-let Console = false
-if (game.ask("PC A CONSOLE B")) {
-    Console = false
-} else {
-    Console = true
-}
 tiles.setCurrentTilemap(tilemap`Nether`)
 SaveWorld("Nether")
 tiles.setCurrentTilemap(tilemap`World`)
